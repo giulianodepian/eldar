@@ -18,6 +18,7 @@ typedef struct {
 
 void valueToInteger(char *fvalue, char *value, int valueSize);
 bool checkCardNumber(char *card);
+bool checkValue(char *value);
 bool checkCard(char *card, char *cardLabel);
 
 int main() {
@@ -38,7 +39,12 @@ int main() {
 
     //Se elimina el newline del string del monto en caso de que haya uno.
     if (value[strlen(value) - 1] == '\n') value[strlen(value) - 1] = '\0';
-    
+    while (!checkValue(value)) {
+        printf("Inserte un monto valido: ");
+        fgets(value, sizeof(value), stdin);
+        ungetc('\n', stdin);
+        while((trash = getchar()) != '\n' && trash != EOF);
+    }
     //Convertir el monto en el formato que corresponde al request
     valueToInteger(ivalue, value, sizeof(ivalue));
     
@@ -143,6 +149,13 @@ void valueToInteger(char *ivalue, char *value, int valueSize) {
 bool checkCardNumber(char *card) {
     for (int i = 0; i < strlen(card); i++) {
         if (!isdigit(card[i])) return false;
+    }
+    return true;
+}
+
+bool checkValue(char *value) {
+    for (int i = 0; i < strlen(value); i++) {
+        if (!isdigit(value[i]) && value[i] != '.') return false;
     }
     return true;
 }
